@@ -25,7 +25,9 @@ Trigger.new do |t| # battles
   t[:lastused] = Time.now - t[:cooldown]
   
   t.match { |info| 
-    info[:what].downcase =~ /\A!ch[aiou]mp\z/
+    info[:what].downcase =~ /\A!ch[aiou]mp\z/ &&
+    (info[:where] == 'pm' || info[:room] == 'showderp')
+    
   }
   
   t.act do |info|

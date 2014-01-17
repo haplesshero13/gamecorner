@@ -27,7 +27,8 @@ Trigger.new do |t|
   t[:first] = true
   
   t.match { |info| 
-    info[:where] == 'c'
+    info[:where] == 'c' &&
+    info[:room] == 'showderp'
   }
   
   t.act do |info|

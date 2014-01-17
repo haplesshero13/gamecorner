@@ -19,28 +19,35 @@
 require "./showderp/bread/breadfinder.rb"
 require "./showderp/bread/battles.rb"
 
-
-Trigger.new do |t| # breadfinder
-  t[:id] = 'bread'
-  t[:lastused] = Time.now
-  t[:cooldown] = 5 # seconds
+Trigger.new do |t| # battles
+  t[:id] = 'afd'
+  t[:cooldown] = 10 # seconds
+  t[:lastused] = Time.now - t[:cooldown]
   
   t.match { |info| 
-    info[:what].downcase == "!bread" &&
+    info[:what].downcase == '!afd' &&
     (info[:where] == 'pm' || info[:room] == 'showderp')
+    
   }
   
   t.act do |info|
-    t[:lastused] + t[:cooldown] < Time.now or next # This should break out of the block
+    t[:lastused] + t[:cooldown] < Time.now or next
     
     t[:lastused] = Time.now
     
-    BreadFinder.get_bread do |bread|
-      result = if bread[:no] == 0
-        "couldn't find the bread, sorry"
+    Battles.get_battles do |battles|
+      battle, time = battles.last
+      
+      
+      result = if battle.nil?
+        "couldn't find any battles, sorry"
       else
-        "bread: http://4chan.org/vp/res/#{bread[:no]}#bottom"
+        time_since = (Time.now - time).to_i / 60 # minutes
+        
+        battle["play.pokemonshowdown.com"] = "showdown-afd.psim.us"
+        "champ battle: #{battle}, posted #{time_since} minutes ago."
       end
+      
       info[:respond].call(result)
     end
   end
